@@ -28,8 +28,8 @@ func TestParseStatFileContent(t *testing.T) {
 	statInfo := parseStatFileContent(statFileContent)
 
 	testhelp.Equal(t, StatInfo{
-		CpuTimeSpentFragments{703790, 1526, 124713, 11576192, 3687, 0, 255, 0, 0, 0},
-		[]CpuTimeSpentFragments{
+		CpuTimeSpentStates{703790, 1526, 124713, 11576192, 3687, 0, 255, 0, 0, 0},
+		[]CpuTimeSpentStates{
 			{88782, 121, 16106, 1446620, 51, 0, 93, 0, 0, 0},
 			{89999, 519, 15030, 1443494, 3134, 0, 112, 0, 0, 0},
 			{86042, 275, 16738, 1447416, 139, 0, 31, 0, 0, 0},

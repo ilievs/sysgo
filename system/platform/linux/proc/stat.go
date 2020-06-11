@@ -12,7 +12,7 @@ const (
 	procStatPath = "/proc/stat"
 )
 
-/* CpuTimeSpentFragments contains the time the CPU in various states
+/* CpuTimeSpentStates contains the time the CPU in various states
 
 The amount of time, measured in units of USER_HZ (1/100ths of
 a second on most architectures, use sysconf(_SC_CLK_TCK) to
@@ -58,7 +58,7 @@ guest_nice (since Linux 2.6.33)
 
 (10) Time spent running a niced guest (virtual CPU for guest operating systems under the control of the Linux kernel).
 */
-type CpuTimeSpentFragments struct {
+type CpuTimeSpentStates struct {
 
 	// User Time spent in user mode.
 	User int64
@@ -100,10 +100,10 @@ type CpuTimeSpentFragments struct {
 type StatInfo struct {
 
 	// Total stats from all CPU cores
-	CpuTotalStats CpuTimeSpentFragments
+	TotalCpuStats CpuTimeSpentStates
 
 	// Stats for each CPU core
-	CpuStats []CpuTimeSpentFragments
+	CpuStats []CpuTimeSpentStates
 
 	// Number of interrupts serviced since boot
 	// time, for each of the possible system interrupts. The
@@ -165,10 +165,10 @@ func GetStat() StatInfo {
 
 var statsCpuLineRegexp = regexp.MustCompile("\\s+")
 
-func parseCpuStat(cpuStatLine string) CpuTimeSpentFragments {
+func parseCpuStat(cpuStatLine string) CpuTimeSpentStates {
 
 	stateStrings := statsCpuLineRegexp.Split(cpuStatLine, -1)[1:]
-	states := CpuTimeSpentFragments{}
+	states := CpuTimeSpentStates{}
 
 	i := 0
 	states.User = conv.MustAtoi64(stateStrings[i])
@@ -201,8 +201,7 @@ func parseStatFileContent(content string) StatInfo {
 	statInfo := StatInfo{}
 
 	// first parse the total CPU time spent
-	stat := parseCpuStat(parts[0])
-	statInfo.CpuTotalStats = stat
+	statInfo.TotalCpuStats = parseCpuStat(parts[0])
 
 	partIdx := 1
 	for ; strings.HasPrefix(parts[partIdx], "cpu"); partIdx++ {
